@@ -46,4 +46,3 @@ void main()
     	printf("Invalid City Name!\n");
     }
 }
-	// system("curl" api >wether.txt);
