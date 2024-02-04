@@ -13,7 +13,7 @@
 
 void pronunciation(char *audioApi)
 {
-    printf("\nAudio API: %s\n", audioApi);
+    // printf("\nAudio API: %s\n", audioApi);
     char audioApiCommand[150];
     sprintf(audioApiCommand, "curl \"%s\" >%s", audioApi, PRONUNCIATIONFILE);
     // sprintf(audioApiCommand, "curl \"%s\" >abhi.mp3", audioApi);
@@ -29,7 +29,6 @@ void pronunciation(char *audioApi)
 
 void main()
 {
-    // system("BeastMode.mp3");
     char word[MAXWORDLENGTH];
     char *apiDictonary = malloc(MAXAPILENGTH);
     char *apiCommand = malloc(MAXAPICOMMANDLENGTH);
@@ -65,9 +64,6 @@ void main()
             sprintf(audioApi, "%s", apiDictonaryDataWord);
             isDefinitionAudioFound = 1;
             pronunciation(audioApi);
-            // sprintf(audioApiCommand, "curl \"%s\" >%s", audioApi, PRONUNCIATIONFILE);
-            // system(audioApiCommand);
-            // system(PRONUNCIATIONFILE);
         }
 
         if(! strcmp(apiDictonaryDataWord, "definition") && isDefinitionAudioFound < 2)
