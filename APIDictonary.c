@@ -11,34 +11,41 @@
 #define MAXAPILENGTH 150
 #define MAXDEFINITIONLENGTH 200
 
-void pronunciation(char *audioApi)
+bool pronunciation(char *audioApi)
 {
+    bool isAudioFound = false;
     // printf("\nAudio API: %s\n", audioApi);
-    char audioApiCommand[150];
-    sprintf(audioApiCommand, "curl \"%s\" >%s", audioApi, PRONUNCIATIONFILE);
-    // sprintf(audioApiCommand, "curl \"%s\" >abhi.mp3", audioApi);
+    char audioApiCommand[MAXAPICOMMANDLENGTH];
+    char pronunciationCommand[MAXAPICOMMANDLENGTH];
+    sprintf(audioApiCommand, "curl -s \"%s\" >%s", audioApi, PRONUNCIATIONFILE);
    if(system(audioApiCommand) != 0)
    {
-    printf("Error!\n");
+    // printf("Error in downloading pronunciation!\n");
    }
    else
    {
-        system(PRONUNCIATIONFILE);
+        sprintf(pronunciationCommand, "vlc %s", PRONUNCIATIONFILE);
+        system(pronunciationCommand);
+        // system(PRONUNCIATIONFILE);
+        isAudioFound = true;
    }
+   return isAudioFound;
 }
 
 void main()
 {
+    // system("BeastMode.mp3");
     char word[MAXWORDLENGTH];
     char *apiDictonary = malloc(MAXAPILENGTH);
     char *apiCommand = malloc(MAXAPICOMMANDLENGTH);
     bool isWordValid = false;
-    int isDefinitionAudioFound = 0;
+    int isDefinitionFound = 0;
+    bool isAudioFound = false;
     printf("Enter Word: ");
     scanf("%s", word);
 
     sprintf(apiDictonary, "https://api.dictionaryapi.dev/api/v2/entries/en/%s", word);
-    sprintf(apiCommand, "curl \"%s\" >%s", apiDictonary, DICTONARYFILE);
+    sprintf(apiCommand, "curl -s \"%s\" >%s", apiDictonary, DICTONARYFILE);
     system(apiCommand);
     FILE *fpDictonary = fopen(DICTONARYFILE, "r");
     fseek(fpDictonary, 0, SEEK_END);
@@ -50,36 +57,40 @@ void main()
     fclose(fpDictonary);
 
     char *apiDictonaryDataWord = malloc(MAXSENTANCELENGTH);
-    char delimeter[] = "{}[]\",\n ";
+    char delimeter[] = "{}[]\"\n ";
     apiDictonaryDataWord = strtok(apiDictonaryData, delimeter);
     char definition[MAXDEFINITIONLENGTH];
+    strcpy(definition, "");
     char *audioApi = malloc(MAXAPILENGTH);
     char *audioApiCommand = malloc(MAXAPICOMMANDLENGTH);
+
     while (apiDictonaryDataWord != NULL)
     {
-        if(! strcmp(apiDictonaryDataWord, "audio") && isDefinitionAudioFound != 1)
+        if(! strcmp(apiDictonaryDataWord, "audio"))
         {
+            strcpy(delimeter, "{}[]\"");
             apiDictonaryDataWord = strtok(NULL, delimeter);
             apiDictonaryDataWord = strtok(NULL, delimeter);
             sprintf(audioApi, "%s", apiDictonaryDataWord);
-            isDefinitionAudioFound = 1;
-            pronunciation(audioApi);
+            isAudioFound = pronunciation(audioApi);
         }
 
-        if(! strcmp(apiDictonaryDataWord, "definition") && isDefinitionAudioFound < 2)
+        if(! strcmp(apiDictonaryDataWord, "definition") && isDefinitionFound != 2)
         {
             isWordValid = true;
+            strcpy(delimeter, "{}[]\":");
             apiDictonaryDataWord = strtok(NULL, delimeter);
-            while(strcmp(apiDictonaryDataWord, "synonyms"))
+
+            while(strcmp(apiDictonaryDataWord, ","))
             {
                 strcat(definition, apiDictonaryDataWord);
                 strcat(definition, " ");
-                apiDictonaryDataWord = strtok(NULL, delimeter);
+                apiDictonaryDataWord = strtok(NULL, ". \"");
             }
-            printf("\nDefinition: %s", definition);
-            isDefinitionAudioFound +=1;
+            printf("\nDefinition of %s: %s", word, definition);
+            isDefinitionFound +=1;
         }
-        if (isDefinitionAudioFound == 2)
+        if (isAudioFound == true && isDefinitionFound != 0)
         {
             break;
         }
@@ -88,7 +99,7 @@ void main()
     
     if(! isWordValid)
     {
-        printf("please enter valid word!\n%s is not a valid word.", word);
+        printf("\tPlease enter a valid word!\n\t%s is invalid.", word);
     }
     
 }
