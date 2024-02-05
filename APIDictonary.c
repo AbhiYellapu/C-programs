@@ -1,3 +1,5 @@
+// Find the definition of a word using Dictionary-API
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,8 +59,8 @@ void main()
     fclose(fpDictonary);
 
     char *apiDictonaryDataWord = malloc(MAXSENTANCELENGTH);
-    char delimeter[] = "{}[]\"\n ";
-    apiDictonaryDataWord = strtok(apiDictonaryData, delimeter);
+    char delimiter[] = "{}[]\"\n ";
+    apiDictonaryDataWord = strtok(apiDictonaryData, delimiter);
     char definition[MAXDEFINITIONLENGTH];
     strcpy(definition, "");
     char *audioApi = malloc(MAXAPILENGTH);
@@ -68,9 +70,9 @@ void main()
     {
         if(! strcmp(apiDictonaryDataWord, "audio"))
         {
-            strcpy(delimeter, "{}[]\"");
-            apiDictonaryDataWord = strtok(NULL, delimeter);
-            apiDictonaryDataWord = strtok(NULL, delimeter);
+            strcpy(delimiter, "{}[]\"");
+            apiDictonaryDataWord = strtok(NULL, delimiter);
+            apiDictonaryDataWord = strtok(NULL, delimiter);
             sprintf(audioApi, "%s", apiDictonaryDataWord);
             isAudioFound = pronunciation(audioApi);
         }
@@ -78,8 +80,8 @@ void main()
         if(! strcmp(apiDictonaryDataWord, "definition") && isDefinitionFound != 2)
         {
             isWordValid = true;
-            strcpy(delimeter, "{}[]\":");
-            apiDictonaryDataWord = strtok(NULL, delimeter);
+            strcpy(delimiter, "{}[]\":");
+            apiDictonaryDataWord = strtok(NULL, delimiter);
 
             while(strcmp(apiDictonaryDataWord, ","))
             {
@@ -94,7 +96,7 @@ void main()
         {
             break;
         }
-        apiDictonaryDataWord = strtok(NULL, delimeter);
+        apiDictonaryDataWord = strtok(NULL, delimiter);
     }
     
     if(! isWordValid)
