@@ -1,5 +1,3 @@
-// Find the definition of a word using Dictionary-API
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -67,7 +65,7 @@ void main()
 
     while (apiDictonaryDataWord != NULL)
     {
-        if(! strcmp(apiDictonaryDataWord, "audio"))
+        if(! strcmp(apiDictonaryDataWord, "audio") && isAudioFound == false)
         {
             strcpy(delimiter, "{}[]\"");
             apiDictonaryDataWord = strtok(NULL, delimiter);
@@ -78,6 +76,7 @@ void main()
 
         if(! strcmp(apiDictonaryDataWord, "definition") && isDefinitionFound != 2)
         {
+            isDefinitionFound++;
             isWordValid = true;
             strcpy(delimiter, "{}[]\":");
             apiDictonaryDataWord = strtok(NULL, delimiter);
@@ -86,21 +85,22 @@ void main()
             {
                 strcat(definition, apiDictonaryDataWord);
                 strcat(definition, " ");
-                apiDictonaryDataWord = strtok(NULL, ". \"");
+                apiDictonaryDataWord = strtok(NULL, ".\"");
             }
-            printf("\nDefinition of %s: %s", word, definition);
-            isDefinitionFound +=1;
+            printf("\n%d. Definition of %s: %s\n", isDefinitionFound, word, definition);
+            strcpy(definition, "");
         }
-        if (isAudioFound == true && isDefinitionFound != 0)
+
+        if (isAudioFound == true && isDefinitionFound >0)
         {
             break;
         }
         apiDictonaryDataWord = strtok(NULL, delimiter);
     }
     
-    if(! isWordValid)
+    if(isWordValid == false)
     {
-        printf("\tPlease enter a valid word!\n\t%s is invalid.", word);
+        printf("\tWe couldn't find the definition for %s!", word);
     }
     
 }
