@@ -36,7 +36,6 @@ bool pronunciation(char *audioApi)
 
 void main()
 {
-    // system("BeastMode.mp3");
     char word[MAXWORDLENGTH];
     char *apiDictonary = malloc(MAXAPILENGTH);
     char *apiCommand = malloc(MAXAPICOMMANDLENGTH);
