@@ -19,7 +19,7 @@ void main()
 	bool isCityFound = false;
 	printf("Enter the city name to find the temperature: ");
 	scanf("%s", city);
-
+	
 	sprintf(api, "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=abe3a0f4d0b6cebfbe7393b4b4e3aa28&units=metric", city);
 	sprintf(apiCommand, "curl -s \"%s\" >%s", api, DATAFILE);
 	system(apiCommand);
@@ -32,7 +32,7 @@ void main()
 	fread(apiData, 1, apiSize, fpApi);
 	apiData[apiSize] = '\0';
 	fclose(fpApi);
-
+	
 	char delimiters[] = "{}[],\":";
 	temperature = strtok(apiData, delimiters);
     while (temperature != NULL) 
