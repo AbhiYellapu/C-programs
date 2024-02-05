@@ -82,13 +82,10 @@ void showMenu()
     FILE *fpMenu = fopen(MENUFILE, "r");
     fseek(fpMenu, 0, SEEK_END);
     char menu[ftell(fpMenu)];
-    // printf("%ld, %ld\n", sizeof(menu), ftell(fpMenu));
     rewind(fpMenu);
     fread(menu, 1, sizeof(menu), fpMenu);
     printf("\n");
-    // fputs(menu, stdout);
-    // puts(menu);
-    fwrite(menu, 1, sizeof(menu) - 8, stdout);
+    fwrite(menu, 1, sizeof(menu), stdout);
     fclose(fpMenu);
     printf("\nPlease enter your option: ");
     scanf("%d", &option);
@@ -132,7 +129,6 @@ void addRecord()
             printf("Enter %s: ", fieldNames[counter]);
             scanf("%s", fieldValue);
         }
-        // printf("fieldValue:%s\n", fieldValue);
         fwrite(fieldValue, MAXFIELDLENGTH, 1, fpRecord);
     }
     fclose(fpRecord);
