@@ -4,30 +4,48 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
+#include <ctype.h>
+
+bool isAllDigits(char *value)
+{
+	int counter = 0;
+	while(value[counter] != '\0')
+	{
+		if(! isdigit(value[counter]))
+		{
+			return false;
+		}
+		counter++;
+	}
+	return true;
+}
 
 bool isPrime(char *isPrimeValue)
 {
-	int number = atoi(isPrimeValue);
-	bool isPrime;
-	if (number <= 1)
+	bool isPrime = false;
+	if(isAllDigits(isPrimeValue))
 	{
-		isPrime = false;
-	}
-	else if (number %2 == 0 && number != 2)
-	{
-		isPrime = false;
-	}
-	else
-	{
-		int squareRoot = sqrt(number);
-		isPrime = true;
-		int counter;
-		for (counter = 3; counter <= squareRoot; counter += 2)
+		int number = atoi(isPrimeValue);
+		if (number <= 1)
 		{
-			if(number % counter == 0)
+			isPrime = false;
+		}
+		else if (number %2 == 0 && number != 2)
+		{
+			isPrime = false;
+		}
+		else
+		{
+			int squareRoot = sqrt(number);
+			isPrime = true;
+			int counter;
+			for (counter = 3; counter <= squareRoot; counter += 2)
 			{
-				isPrime = false;
-				break;
+				if(number % counter == 0)
+				{
+					isPrime = false;
+					break;
+				}
 			}
 		}
 	}
