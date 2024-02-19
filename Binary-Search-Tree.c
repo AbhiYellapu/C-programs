@@ -1,4 +1,4 @@
-// Binary searchItem Tree
+// Binary search tree for items domain
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,7 +53,6 @@ void main()
 	root = NULL;
 	root = loadItems(root);
 	printf("%d Items are available.\n", getItemsCount(root));
-
 	do
 	{
 		showMenu();
@@ -81,32 +80,31 @@ void showMenu()
 	switch(option)
 	{
 		case 1: root = connectTreeNode(root, getItems());
-				fpItems = fopen(DATAFILE, "w");
-				saveItems(root, fpItems);
-				fclose(fpItems);
-				break;
+			fpItems = fopen(DATAFILE, "w");
+			saveItems(root, fpItems);
+			fclose(fpItems);
+			break;
 		case 2:	viewAllItems(root);		
-				break;
+			break;
 		case 3: itemId = getItemId();
-				matchedNode = getMatchingNode(root, itemId);
-				printItemNotFoundMessage(itemId, matchedNode);
-				updateItemPrice(matchedNode);
-				fpItems = fopen(DATAFILE, "w");
-				saveItems(root, fpItems);
-				fclose(fpItems);
-				break;
+			matchedNode = getMatchingNode(root, itemId);
+			printItemNotFoundMessage(itemId, matchedNode);
+			updateItemPrice(matchedNode);
+			fpItems = fopen(DATAFILE, "w");
+			saveItems(root, fpItems);
+			fclose(fpItems);
+			break;
 		case 4: itemId = getItemId();
-				root = deleteItem(root, itemId);
-				fpItems = fopen(DATAFILE, "w");
-				saveItems(root, fpItems);
-				fclose(fpItems);
-				break;
-
+			root = deleteItem(root, itemId);
+			fpItems = fopen(DATAFILE, "w");
+			saveItems(root, fpItems);
+			fclose(fpItems);
+			break;
 		case 5: itemId = getItemId();
-				matchedNode = getMatchingNode(root, itemId);
-				printItemNotFoundMessage(itemId, matchedNode);
-				searchItem(matchedNode);
-				break;
+			matchedNode = getMatchingNode(root, itemId);
+			printItemNotFoundMessage(itemId, matchedNode);
+			searchItem(matchedNode);
+			break;
 		case 0: exit(0);
 		default:printf("Please enter valid option!\n");
 	}	
@@ -166,7 +164,6 @@ char * getRandomItemId()
 	srand(time(0));
 	char *itemId = malloc(MAXIDLENGTH);
 	sprintf(itemId, "%d", 10 + rand() % (150 - 10 + 1));
-	
 	return itemId;
 }
 
@@ -330,51 +327,51 @@ void viewAllItems(struct Node *root)
 	switch(option)
 	{
 		case 1:	preorderTraversal(root);
-				break;
+			break;
 		case 2: inorderTraversal(root);
-				break;
+			break;
 		case 3: postorderTraversal(root);
-				break;
-		default:printf("\tPlease enter valid option!\n");
+			break;
+		default:printf("\tPlease enter valid option to view!\n");
 	}
 
 }
 
 struct Node* deleteItem(struct Node* root, char *itemId) 
 {
-    if (root == NULL) 
-    {
-    	printItemNotFoundMessage(itemId, NULL);
-        return root;
-    }
-    if (atoi(itemId) < atoi(root->data.itemId)) 
-    {
-        root->leftChild = deleteItem(root->leftChild, itemId);
-    } 
-    else if (atoi(itemId) > atoi(root->data.itemId)) 
-    {
-        root->rightChild = deleteItem(root->rightChild, itemId);
-    } 
-    else 
-    {
-        if (root->leftChild == NULL) 
-        {
-            struct Node* replacementNode = root->rightChild;
-            free(root);
-            printDeletionMessage(itemId);
-            return replacementNode;
-        } 
-        else if (root->rightChild == NULL) 
-        {
-            struct Node* replacementNode = root->leftChild;
-            free(root);
-            printDeletionMessage(itemId);
-            return replacementNode;
-        }
-        struct Node* replacementNode = getMinimumNode(root->rightChild);
-        root->data = replacementNode->data;
-        root->rightChild = deleteItem(root->rightChild, replacementNode->data.itemId);
-    }
+    	if (root == NULL) 
+    	{
+	    	printItemNotFoundMessage(itemId, NULL);
+	        return root;
+    	}
+    	if (atoi(itemId) < atoi(root->data.itemId)) 
+    	{
+	        root->leftChild = deleteItem(root->leftChild, itemId);
+    	} 
+    	else if (atoi(itemId) > atoi(root->data.itemId)) 
+    	{
+	        root->rightChild = deleteItem(root->rightChild, itemId);
+    	} 
+    	else 
+    	{
+	        if (root->leftChild == NULL) 
+	        {
+	            struct Node* replacementNode = root->rightChild;
+	            free(root);
+	            printDeletionMessage(itemId);
+	            return replacementNode;
+	        } 
+	        else if (root->rightChild == NULL) 
+	        {
+	            struct Node* replacementNode = root->leftChild;
+	            free(root);
+	            printDeletionMessage(itemId);
+	            return replacementNode;
+	        }
+	        struct Node* replacementNode = getMinimumNode(root->rightChild);
+	        root->data = replacementNode->data;
+	        root->rightChild = deleteItem(root->rightChild, replacementNode->data.itemId);
+	    }
     return root;
 }
 
@@ -386,16 +383,6 @@ struct Node* getMinimumNode(struct Node *matchedNode)
 		minimumNode = minimumNode->leftChild;
 	}
 	return minimumNode;
-}
-
-struct Node* getMaximumNode(struct Node *matchedNode)
-{
-	struct Node *maximumNode = matchedNode;
-	while (maximumNode != NULL && maximumNode->rightChild != NULL)
-	{
-		maximumNode = maximumNode->rightChild;
-	}
-	return maximumNode;
 }
 
 void printDeletionMessage(char *itemId)
