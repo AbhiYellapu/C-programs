@@ -34,6 +34,7 @@ struct Node* newNode(Item item);
 struct Node* loadItems(struct Node *root);
 void saveItems(struct Node *root, FILE *fpItems);
 Item getItems();
+void createItem(struct Node *root);
 char *getRandomItemId();
 void printItemDetails(Item *item);
 void showMenu();
@@ -45,9 +46,9 @@ void preorderTraversal(struct Node *root);
 void postorderTraversal(struct Node *root);
 struct NodeWithParent* getMatchingNode(struct Node*, char *itemId, struct Node *parent);
 void searchItem(struct Node *matchedNode);
-void searchHelper();
-void updateHelper();
-void deleteHelper();
+void searchHelper(struct Node *root);
+void updateHelper(struct Node *root);
+void deleteHelper(struct Node *root);
 void updateItemPrice(struct Node *matchedNode);
 float getNewItemPrice(char *itemDescription);
 void viewAllItems(struct Node *root);
@@ -72,9 +73,6 @@ void main()
 void showMenu()
 {
 	int option;
-	char *itemId;
-	struct NodeWithParent *matchedNode;
-	FILE *fpItems;
 
 	printf("\n\t -------------- Menu -------------\n");
 	printf("\t  0. Exit\n");
@@ -89,22 +87,19 @@ void showMenu()
 	scanf("%d", &option);
 	switch(option)
 	{
-		case 1: root = connectTreeNode(root, getItems());
-				fpItems = fopen(DATAFILE, "w");
-				saveItems(root, fpItems);
-				fclose(fpItems);
+		case 1: createItem(root);
 				break;
 
 		case 2:	viewAllItems(root);		
 				break;
 
-		case 3: updateHelper();
+		case 3: updateHelper(root);
 				break;
 
-		case 4: deleteHelper();
+		case 4: deleteHelper(root);
 				break;
 
-		case 5: searchHelper();
+		case 5: searchHelper(root);
 				break;
 		case 0: exit(0);
 		default:printf("Please enter valid option!\n");
@@ -316,8 +311,7 @@ void updateItemPrice(struct Node *matchedNode)
 
 void viewAllItems(struct Node *root)
 {
-	printf("\n%d Items are available.\n", getItemsCount(root));
-	printf("\t0. Exit\n");
+	printf("\n\t%d Items are available.\n", getItemsCount(root));
 	printf("\t1. Preorder Traversal\n");
 	printf("\t2. Inorder Traversal\n");
 	printf("\t3. Postorder Traversal\n");
@@ -396,7 +390,16 @@ struct Node** getParentNodeAddress(struct NodeWithParent *matchedNode)
 	return parentNode;
 }
 
-void searchHelper()
+void createItem(struct Node *root)
+{
+	FILE *fpItems;
+	root = connectTreeNode(root, getItems());
+	fpItems = fopen(DATAFILE, "w");
+	saveItems(root, fpItems);
+	fclose(fpItems);
+
+}
+void searchHelper(struct Node *root)
 {
 	char *itemId = getItemId();
 	struct NodeWithParent *matchedNode;
@@ -411,7 +414,7 @@ void searchHelper()
 		searchItem(matchedNode->node);
 	}
 }
-void updateHelper()
+void updateHelper(struct Node *root)
 {
 	char *itemId = getItemId();
 	struct NodeWithParent *matchedNode;
@@ -429,7 +432,7 @@ void updateHelper()
 		fclose(fpItems);
 	}
 }
-void deleteHelper()
+void deleteHelper(struct Node *root)
 {
 	char *itemId = getItemId();
 	struct NodeWithParent *matchedNode;
