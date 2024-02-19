@@ -69,10 +69,10 @@ void showMenu()
 	printf("\n\t -------------- Menu -------------\n");
 	printf("\t  0. Exit\n");
 	printf("\t  1. Create Item\n");
-	printf("\t  2. View All Item details\n");
-	printf("\t  3. updateItemPrice item price\n");
-	printf("\t  4. deleteItem item\n");
-	printf("\t  5. searchItem item\n");
+	printf("\t  2. View All Item Details\n");
+	printf("\t  3. Update Item Price\n");
+	printf("\t  4. Delete Item\n");
+	printf("\t  5. Search Item\n");
 	printf("\t -----------------------------------\n");
 	printf("Enter your choice: ");
 	scanf("%d", &option);
@@ -387,7 +387,7 @@ struct Node* getMinimumNode(struct Node *matchedNode)
 
 void printDeletionMessage(char *itemId)
 {
-	printf("\tItem with ID %s successfully deleteItemd.\n", itemId);
+	printf("\tItem with ID %s successfully deleted.\n", itemId);
 }
 
 void printItemNotFoundMessage(char *itemId, struct Node *matchedNode)
