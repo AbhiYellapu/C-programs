@@ -33,6 +33,7 @@ struct NodeWithParent
 struct Node* newNode(Item item);
 struct Node* loadItems(struct Node *root);
 void saveItems(struct Node *root, FILE *fpItems);
+void saveHelper(struct Node *root);
 Item getItems();
 void createItem(struct Node *root);
 char *getRandomItemId();
@@ -45,8 +46,7 @@ void inorderTraversal(struct Node *root);
 void preorderTraversal(struct Node *root);
 void postorderTraversal(struct Node *root);
 struct NodeWithParent* getMatchingNode(struct Node*, char *itemId, struct Node *parent);
-void searchItem(struct Node *matchedNode);
-void searchHelper(struct Node *root);
+void searchItem(struct Node *root, char *itemId);
 void updateHelper(struct Node *root);
 void deleteHelper(struct Node *root);
 void updateItemPrice(struct Node *matchedNode);
@@ -99,7 +99,7 @@ void showMenu()
 		case 4: deleteHelper(root);
 				break;
 
-		case 5: searchHelper(root);
+		case 5: searchItem(root, getItemId());
 				break;
 		case 0: exit(0);
 		default:printf("Please enter valid option!\n");
@@ -282,11 +282,17 @@ struct NodeWithParent* getMatchingNode(struct Node *root, char *itemId, struct N
 	}
 }
 
-void searchItem(struct Node *matchedNode)
+void searchItem(struct Node *root, char *itemId)
 {
-	if (matchedNode != NULL)
-	{	
-		printItemDetails(&matchedNode->data);
+	struct NodeWithParent *matchedNode;
+	matchedNode = getMatchingNode(root, itemId, NULL);
+	if (matchedNode->node == NULL)
+	{
+		printItemNotFoundMessage(itemId, matchedNode->node);
+	}
+	else
+	{
+		printItemDetails(&(matchedNode->node)->data);
 	}
 }
 
@@ -392,33 +398,14 @@ struct Node** getParentNodeAddress(struct NodeWithParent *matchedNode)
 
 void createItem(struct Node *root)
 {
-	FILE *fpItems;
 	root = connectTreeNode(root, getItems());
-	fpItems = fopen(DATAFILE, "w");
-	saveItems(root, fpItems);
-	fclose(fpItems);
+	saveHelper(root);
+}
 
-}
-void searchHelper(struct Node *root)
-{
-	char *itemId = getItemId();
-	struct NodeWithParent *matchedNode;
-	FILE *fpItems;
-	matchedNode = getMatchingNode(root, itemId, NULL);
-	if (matchedNode->node == NULL)
-	{
-		printItemNotFoundMessage(itemId, matchedNode->node);
-	}
-	else
-	{
-		searchItem(matchedNode->node);
-	}
-}
 void updateHelper(struct Node *root)
 {
 	char *itemId = getItemId();
 	struct NodeWithParent *matchedNode;
-	FILE *fpItems;
 	matchedNode = getMatchingNode(root, itemId, NULL);
 	if (matchedNode->node == NULL)
 	{
@@ -427,16 +414,13 @@ void updateHelper(struct Node *root)
 	else
 	{
 		updateItemPrice(matchedNode->node);
-		fpItems = fopen(DATAFILE, "w");
-		saveItems(root, fpItems);
-		fclose(fpItems);
+		saveHelper(root);
 	}
 }
 void deleteHelper(struct Node *root)
 {
 	char *itemId = getItemId();
 	struct NodeWithParent *matchedNode;
-	FILE *fpItems;
 	matchedNode = getMatchingNode(root, itemId, NULL);
 	if (matchedNode->node == NULL)
 	{
@@ -453,9 +437,7 @@ void deleteHelper(struct Node *root)
 		if (confirmation == 1)
 		{
 			deleteItem(matchedNode);
-			fpItems = fopen(DATAFILE, "w");
-			saveItems(root, fpItems);
-			fclose(fpItems);
+			saveHelper(root);
 			printDeletionMessage(itemId);
 		}
 		else
@@ -464,6 +446,14 @@ void deleteHelper(struct Node *root)
 		}
 	}
 }
+
+void saveHelper(struct Node *root)
+{
+	FILE *fpItems = fopen(DATAFILE, "w");
+	saveItems(root, fpItems);
+	fclose(fpItems);
+}
+
 void printDeletionMessage(char *itemId)
 {
 	printf("\tItem with ID %s successfully deleted.\n", itemId);
